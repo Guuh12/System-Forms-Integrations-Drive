@@ -1,4 +1,3 @@
-
 "use client";
 
 import Link from 'next/link';
@@ -21,8 +20,8 @@ export function HeaderNav() {
       <div className="container mx-auto flex items-center justify-between py-3 px-4 md:px-6">
         <Link href="#formulario" className="flex items-center text-foreground hover:opacity-80 transition-opacity" aria-label="Navegar para Formulário">
           <Image
-            src="https://placehold.co/40x40.png"
-            alt="Sua Logo Placeholder"
+            src="/icons/Logo-Empresa-RS-Transporte-Sem-Fundo.ico"
+            alt="Logo RS Transporte"
             width={40}
             height={40}
             priority
@@ -61,8 +60,8 @@ export function HeaderNav() {
                 <div className="flex justify-between items-center p-6 border-b">
                    <Link href="#formulario" className="text-xl font-bold text-foreground hover:text-primary transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
                      <Image
-                        src="https://placehold.co/30x30.png"
-                        alt="Sua Logo Placeholder Mobile"
+                        src="/icons/Logo-Empresa-RS-Transporte.ico"
+                        alt="Logo RS Transporte"
                         width={30}
                         height={30}
                         className="object-contain"

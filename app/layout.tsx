@@ -5,6 +5,11 @@ import './globals.css';
 export const metadata: Metadata = {
   title: "RS Transporte",
   description: 'RS Transporte',
+  icons: {
+    icon: '/icons/Logo-Empresa-RS-Transporte.ico',
+    shortcut: '/icons/Logo-Empresa-RS-Transporte.ico',
+    apple: '/icons/Logo-Empresa-RS-Transporte.ico',
+  },
 };
 
 export default function RootLayout({

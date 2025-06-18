@@ -33,9 +33,9 @@ const faqItems = [
   },
   {
     id: "item-3",
-    question: "A assinatura é obrigatórias?",
+    question: "A assinatura é obrigatória?",
     answer:
-      "Sim, ao final do formulário é necessário realizar a assinatura digital no campo indicado para validar o preenchimento. A avaliação do serviço também é importante e deve ser feita marcando os itens que refletem a experiência. Esses dados ajudam na melhoria contínua dos serviços prestados.",
+      "Sim, ao final do formulário é necessário realizar a assinatura digital no campo indicado para validar o preenchimento. A assinatura é importante para garantir a autenticidade e a responsabilidade sobre as informações fornecidas.",
   },
 ];
 
