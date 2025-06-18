@@ -131,7 +131,7 @@ export function ContactForm() {
 
   const handleSignatureEnd = () => { 
     if (sigCanvasRef.current) {
-      const dataUrl = sigCanvasRef.current.getTrimmedCanvas().toDataURL("image/jpeg", 0.7);
+      const dataUrl = sigCanvasRef.current.getTrimmedCanvas().toDataURL("image/png");
       form.setValue("assinatura", dataUrl || "", { shouldValidate: true });
     }
   };
