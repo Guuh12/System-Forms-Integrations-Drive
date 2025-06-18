@@ -73,7 +73,7 @@ export function ContactForm() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isClient, setIsClient] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [canvasWidth, setCanvasWidth] = useState(500);
+  const [canvasWidth, setCanvasWidth] = useState(300);
 
   useEffect(() => {
     setIsClient(true);
@@ -131,7 +131,7 @@ export function ContactForm() {
 
   const handleSignatureEnd = () => { 
     if (sigCanvasRef.current) {
-      const dataUrl = sigCanvasRef.current.getTrimmedCanvas().toDataURL("image/png");
+      const dataUrl = sigCanvasRef.current.getTrimmedCanvas().toDataURL("image/jpeg", 0.7);
       form.setValue("assinatura", dataUrl || "", { shouldValidate: true });
     }
   };
@@ -201,7 +201,7 @@ export function ContactForm() {
     document.body.appendChild(pdfContentElement);
 
     try {
-      const canvas = await html2canvas(pdfContentElement, { scale: 2, useCORS: true, backgroundColor: '#ffffff' });
+      const canvas = await html2canvas(pdfContentElement, { scale: 1, useCORS: true, backgroundColor: '#ffffff' });
       document.body.removeChild(pdfContentElement);
       
       const pdf = new jsPDF('p', 'mm', 'a4');
@@ -547,8 +547,8 @@ export function ContactForm() {
                             ref={sigCanvasRef}
                             penColor="black"
                             canvasProps={{
-                              width: canvasWidth,
-                              height: 200,
+                              width: canvasWidth > 350 ? 350 : canvasWidth,
+                              height: 100,
                               className: 'sigCanvas w-full h-auto rounded-md bg-white',
                             }}
                             onEnd={handleSignatureEnd}
