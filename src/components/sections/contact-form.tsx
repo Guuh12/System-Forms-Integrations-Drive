@@ -1,4 +1,3 @@
-
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -71,11 +70,21 @@ type FormData = z.infer<typeof formSchema>;
 export function ContactForm() {
   const { toast } = useToast();
   const sigCanvasRef = useRef<ReactSignatureCanvas | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const [isClient, setIsClient] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [canvasWidth, setCanvasWidth] = useState(500);
 
   useEffect(() => {
     setIsClient(true);
+    function updateWidth() {
+      if (containerRef.current) {
+        setCanvasWidth(containerRef.current.offsetWidth);
+      }
+    }
+    updateWidth();
+    window.addEventListener("resize", updateWidth);
+    return () => window.removeEventListener("resize", updateWidth);
   }, []);
 
   const form = useForm<FormData>({
@@ -120,7 +129,7 @@ export function ContactForm() {
     form.setValue("assinatura", "", { shouldValidate: true }); 
   };
 
-  const handleSignatureEnd = () => {
+  const handleSignatureEnd = () => { 
     if (sigCanvasRef.current) {
       const dataUrl = sigCanvasRef.current.getTrimmedCanvas().toDataURL("image/png");
       form.setValue("assinatura", dataUrl || "", { shouldValidate: true });
@@ -217,27 +226,20 @@ export function ContactForm() {
       
       const pdfBase64 = pdf.output('datauristring').split(',')[1];
 
-      const APPS_SCRIPT_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbySGLcT528CY4seJnJavosm2u3y9Ui5s5m-xpp2htPWBQ9gyQ3Aons1zyyNK8imyTnIwg/exec';
-      
-      toast({ title: "Enviando PDF para o Google Drive...", description: "Aguarde um momento." });
-
       const scriptPayload = {
         pdfBase64: pdfBase64,
         fileName: pdfFileNameForDrive,
         folderName: "Travel Information" 
       };
       
-      console.log("Attempting to send to Apps Script. URL:", APPS_SCRIPT_WEB_APP_URL);
+      console.log("Attempting to send to Apps Script. URL:", '/api/proxy-google-drive');
       console.log("Payload keys being sent to Apps Script:", Object.keys(scriptPayload));
 
-      const scriptResponse = await fetch(APPS_SCRIPT_WEB_APP_URL, {
+      const scriptResponse = await fetch('/api/proxy-google-drive', {
         method: 'POST',
-        mode: 'cors', 
-        cache: 'no-cache',
         headers: {
           'Content-Type': 'application/json',
         },
-        redirect: 'follow', 
         body: JSON.stringify(scriptPayload)
       });
 
@@ -540,16 +542,18 @@ export function ContactForm() {
                   <FormControl>
                     <div className={`border rounded-md p-0.5 bg-white focus-within:ring-2 focus-within:ring-ring ${fieldState.error ? 'border-destructive ring-destructive' : 'border-input'}`}>
                      {isClient && (
-                        <ReactSignatureCanvas
+                        <div ref={containerRef} className="w-full">
+                          <ReactSignatureCanvas
                             ref={sigCanvasRef}
                             penColor="black"
                             canvasProps={{
-                            width: 500,
-                            height: 200,
-                            className: 'sigCanvas w-full h-auto rounded-md bg-white',
+                              width: canvasWidth,
+                              height: 200,
+                              className: 'sigCanvas w-full h-auto rounded-md bg-white',
                             }}
                             onEnd={handleSignatureEnd}
-                        />
+                          />
+                        </div>
                      )}
                     </div>
                   </FormControl>
