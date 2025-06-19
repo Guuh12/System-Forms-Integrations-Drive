@@ -22,7 +22,7 @@ const faqItems = [
       <>
         Os campos de custo devem ser preenchidos com os valores gastos em cada categoria:
         <ul className="list-disc pl-5 mt-2 space-y-1">
-          <li><strong>HP R$:</strong> combustível ou uso por hora do veículo.</li>
+          <li><strong>HP R$:</strong> quanto tempo o motorista ficou parado.</li>
           <li><strong>Serv R$:</strong> serviços extras como lavagem ou manutenção.</li>
           <li><strong>Ped R$:</strong> pedágios.</li>
           <li><strong>Est R$:</strong> estacionamento.</li>

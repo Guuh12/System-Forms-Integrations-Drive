@@ -24,12 +24,6 @@ import { useRef, useState, useEffect } from "react";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 
-const numberPreprocess = (val: unknown) => {
-  if (val === "" || val === null || val === undefined) return undefined;
-  const num = Number(val);
-  return isNaN(num) ? undefined : num;
-};
-
 const formSchema = z.object({
   empresa: z.string().min(1, "Empresa é obrigatória."),
   usuario: z.string().min(1, { message: "Usuário é obrigatório." }).max(50, { message: "Usuário não pode exceder 50 caracteres." }),
@@ -37,30 +31,10 @@ const formSchema = z.object({
   saida: z.string().min(1, "Horário de saída é obrigatório."),
   chegada: z.string().min(1, "Horário de chegada é obrigatório."),
   
-  km: z.preprocess(
-    numberPreprocess,
-    z.coerce.number({invalid_type_error: "KM deve ser um número."}).positive({ message: "KM deve ser um número positivo." }).optional()
-  ),
-  hpReais: z.preprocess(
-    numberPreprocess,
-    z.coerce.number({invalid_type_error: "HP R$ deve ser um número."}).nonnegative({ message: "HP R$ deve ser um valor não negativo." }).optional()
-  ),
-  servReais: z.preprocess(
-    numberPreprocess,
-    z.coerce.number({invalid_type_error: "Serv R$ deve ser um número."}).nonnegative({ message: "Serv R$ deve ser um valor não negativo." }).optional()
-  ),
-  pedReais: z.preprocess(
-    numberPreprocess,
-    z.coerce.number({invalid_type_error: "Ped R$ deve ser um número."}).nonnegative({ message: "Ped R$ deve ser um valor não negativo." }).optional()
-  ),
-  estReais: z.preprocess(
-    numberPreprocess,
-    z.coerce.number({invalid_type_error: "Est R$ deve ser um número."}).nonnegative({ message: "Est R$ deve ser um valor não negativo." }).optional()
-  ),
-  totalReais: z.preprocess(
-    numberPreprocess,
-    z.coerce.number().nonnegative({ message: "R$ Total deve ser um valor não negativo." }).optional()
-  ),
+  km: z.string().min(1, "KM deve ser um número."),
+  hpReais: z.string().min(1, "HP R$ deve ser um número."),
+  pedReais: z.string().min(1, "Ped R$ deve ser um número."),
+  estReais: z.string().min(1, "Est R$ deve ser um número."),
   assinatura: z.string().min(1,"Assinatura é obrigatória."), 
   dataAssinatura: z.date({ required_error: "Data da assinatura é obrigatória." }),
 });
@@ -95,12 +69,10 @@ export function ContactForm() {
       trajeto: "",
       saida: "",
       chegada: "",
-      km: undefined, 
-      hpReais: undefined, 
-      servReais: undefined,
-      pedReais: undefined,
-      estReais: undefined,
-      totalReais: undefined,
+      km: "",
+      hpReais: "",
+      pedReais: "",
+      estReais: "",
       assinatura: "",
       dataAssinatura: new Date(),
     },
@@ -108,21 +80,8 @@ export function ContactForm() {
 
   const watchedKm = form.watch("km");
   const watchedHpReais = form.watch("hpReais");
-  const watchedServReais = form.watch("servReais");
   const watchedPedReais = form.watch("pedReais");
   const watchedEstReais = form.watch("estReais");
-
-  useEffect(() => {
-    const kmNum = Number(watchedKm) || 0;
-    const hpReaisNum = Number(watchedHpReais) || 0;
-    const servReaisNum = Number(watchedServReais) || 0;
-    const pedReaisNum = Number(watchedPedReais) || 0;
-    const estReaisNum = Number(watchedEstReais) || 0;
-
-    const total = (kmNum * 4) + hpReaisNum + servReaisNum + pedReaisNum + estReaisNum;
-    form.setValue("totalReais", parseFloat(total.toFixed(2)), { shouldValidate: true, shouldDirty: true });
-  }, [watchedKm, watchedHpReais, watchedServReais, watchedPedReais, watchedEstReais, form]);
-
 
   const clearSignature = () => {
     sigCanvasRef.current?.clear();
@@ -157,18 +116,13 @@ export function ContactForm() {
     pdfContentElement.style.fontSize = '12px';
     pdfContentElement.style.boxSizing = 'border-box';
 
-
-    const formatCurrency = (value?: number | string) => {
+    const formatCurrency = (value?: string) => {
+        if (value === "" || value === null || value === undefined) return "0,00";
         const num = Number(value);
-        if (isNaN(num) || value === "" || value === null || value === undefined) return "0,00";
+        if (isNaN(num)) return "0,00";
         return num.toFixed(2).replace('.',',');
     }
     
-    const getValueOrZero = (value?: number | string) => {
-      const num = Number(value);
-      return isNaN(num) ? 0 : num;
-    }
-
     pdfContentElement.innerHTML = `
       <h1 style="text-align: center; margin-bottom: 20px; font-size: 20px; color: #333;">Formulário de Transporte</h1>
       
@@ -183,12 +137,10 @@ export function ContactForm() {
       
       <div style="margin-bottom: 15px; padding: 10px; border: 1px solid #eee; border-radius: 5px; background-color: #f9f9f9;">
         <h2 style="font-size: 16px; margin-top: 0; margin-bottom:10px; border-bottom: 1px solid #ddd; padding-bottom: 5px; color: #555;">Custos (R$)</h2>
-        <p><strong>KM:</strong> ${getValueOrZero(data.km)}</p>
-        <p><strong>HP R$:</strong> ${formatCurrency(data.hpReais)}</p>
-        <p><strong>Serv R$:</strong> ${formatCurrency(data.servReais)}</p>
+        <p><strong>KM:</strong> ${data.km}</p>
+        <p><strong>Hora Parada R$:</strong> ${formatCurrency(data.hpReais)}</p>
         <p><strong>Ped R$:</strong> ${formatCurrency(data.pedReais)}</p>
         <p><strong>Est R$:</strong> ${formatCurrency(data.estReais)}</p>
-        <p><strong>R$ Total:</strong> ${formatCurrency(data.totalReais)}</p>
       </div>
       
       <div style="margin-top: 20px; padding: 10px; border: 1px solid #eee; border-radius: 5px; background-color: #f9f9f9;">
@@ -196,6 +148,10 @@ export function ContactForm() {
         <p><strong>Data:</strong> ${format(data.dataAssinatura, "dd/MM/yyyy", { locale: ptBR })}</p>
         <p style="margin-top:10px;"><strong>Assinatura:</strong></p>
         ${currentSignature ? `<img src="${currentSignature}" alt="Assinatura" style="width: 180px; height: auto; border: 1px solid #ccc; margin-top: 5px; background-color: #fff;" />` : '<p>Não fornecida</p>'}
+      </div>
+      <div style="margin-top: 160px; text-align: center;">
+        <img src='/icons/Logo Empres RS Transporte Sem Fundo-2.png' alt='Logo RS Transporte' style='display: block; margin: 0 auto 8px auto; max-width: 60px; height: auto;' />
+        <div style='font-size: 14px; font-weight: bold; margin-top: 4px;'>Cnpj: 30.735.162/0001-39</div>
       </div>
     `;
     document.body.appendChild(pdfContentElement);
@@ -256,9 +212,14 @@ export function ContactForm() {
       }
 
       const whatsappMessage = `Olá, segue o formulário do usuário ${data.usuario}. Link para o PDF: ${googleDriveLink}`;
-      const whatsappNumber = "5511952691735"; 
-      const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`;
-      
+      const whatsappNumber = "5511952691735";
+      const encodedMessage = encodeURIComponent(whatsappMessage);
+
+      const isMobile = /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent);
+      const whatsappUrl = isMobile
+        ? `https://wa.me/${whatsappNumber}?text=${encodedMessage}`
+        : `https://web.whatsapp.com/send?phone=${whatsappNumber}&text=${encodedMessage}`;
+
       window.open(whatsappUrl, '_blank')?.focus();
       
       toast({
@@ -283,12 +244,10 @@ export function ContactForm() {
         trajeto: "",
         saida: "",
         chegada: "",
-        km: undefined,
-        hpReais: undefined,
-        servReais: undefined,
-        pedReais: undefined,
-        estReais: undefined,
-        totalReais: undefined, 
+        km: "",
+        hpReais: "",
+        pedReais: "",
+        estReais: "",
         assinatura: "",
         dataAssinatura: new Date(),
       });
@@ -425,11 +384,9 @@ export function ContactForm() {
                     <FormLabel className="text-lg">KM</FormLabel>
                     <FormControl>
                       <Input
-                        type="number"
+                        type="text"
                         placeholder="0"
                         {...field}
-                        onChange={e => field.onChange(e.target.value === '' ? undefined : parseFloat(e.target.value))}
-                        value={field.value === undefined || field.value === null || isNaN(Number(field.value)) ? '' : String(field.value)}
                         className="text-base p-3 h-12"
                       />
                     </FormControl>
@@ -442,33 +399,11 @@ export function ContactForm() {
                 name="hpReais" 
                 render={({ field }) => ( 
                   <FormItem> 
-                    <FormLabel className="text-lg">HP R$</FormLabel> 
+                    <FormLabel className="text-lg">Hora Parada R$</FormLabel> 
                     <FormControl><Input 
-                        type="number" 
+                        type="text" 
                         placeholder="0,00" 
-                        step="0.01" 
                         {...field} 
-                        onChange={e => field.onChange(e.target.value === '' ? undefined : parseFloat(e.target.value))}
-                        value={field.value === undefined || field.value === null || isNaN(Number(field.value)) ? '' : String(field.value)}
-                        className="text-base p-3 h-12" 
-                    /></FormControl> 
-                    <FormMessage /> 
-                  </FormItem> 
-                )} 
-              />
-              <FormField 
-                control={form.control} 
-                name="servReais" 
-                render={({ field }) => ( 
-                  <FormItem> 
-                    <FormLabel className="text-lg">Serv R$</FormLabel> 
-                    <FormControl><Input 
-                        type="number" 
-                        placeholder="0,00" 
-                        step="0.01" 
-                        {...field} 
-                        onChange={e => field.onChange(e.target.value === '' ? undefined : parseFloat(e.target.value))}
-                        value={field.value === undefined || field.value === null || isNaN(Number(field.value)) ? '' : String(field.value)}
                         className="text-base p-3 h-12" 
                     /></FormControl> 
                     <FormMessage /> 
@@ -482,12 +417,9 @@ export function ContactForm() {
                   <FormItem> 
                     <FormLabel className="text-lg">Ped R$</FormLabel> 
                     <FormControl><Input 
-                        type="number" 
+                        type="text" 
                         placeholder="0,00" 
-                        step="0.01" 
                         {...field} 
-                        onChange={e => field.onChange(e.target.value === '' ? undefined : parseFloat(e.target.value))}
-                        value={field.value === undefined || field.value === null || isNaN(Number(field.value)) ? '' : String(field.value)}
                         className="text-base p-3 h-12" 
                     /></FormControl> 
                     <FormMessage /> 
@@ -501,31 +433,10 @@ export function ContactForm() {
                   <FormItem> 
                     <FormLabel className="text-lg">Est R$</FormLabel> 
                     <FormControl><Input 
-                        type="number" 
+                        type="text" 
                         placeholder="0,00" 
-                        step="0.01" 
                         {...field} 
-                        onChange={e => field.onChange(e.target.value === '' ? undefined : parseFloat(e.target.value))}
-                        value={field.value === undefined || field.value === null || isNaN(Number(field.value)) ? '' : String(field.value)}
                         className="text-base p-3 h-12" 
-                    /></FormControl> 
-                    <FormMessage /> 
-                  </FormItem> 
-                )} 
-              />
-              <FormField 
-                control={form.control} 
-                name="totalReais" 
-                render={({ field }) => ( 
-                  <FormItem> 
-                    <FormLabel className="text-lg">R$ Total</FormLabel> 
-                    <FormControl><Input 
-                        type="number" 
-                        placeholder="0,00" 
-                        {...field} 
-                        readOnly 
-                        value={field.value === undefined || field.value === null || isNaN(Number(field.value)) ? '' : String(field.value)}
-                        className="text-base p-3 h-12 bg-muted" 
                     /></FormControl> 
                     <FormMessage /> 
                   </FormItem> 
@@ -617,13 +528,3 @@ export function ContactForm() {
     </section>
   );
 }
-    
-
-    
-
-
-
-    
-
-
-
