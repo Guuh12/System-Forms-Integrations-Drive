@@ -138,7 +138,7 @@ export function ContactForm() {
       <div style="margin-bottom: 15px; padding: 10px; border: 1px solid #eee; border-radius: 5px; background-color: #f9f9f9;">
         <h2 style="font-size: 16px; margin-top: 0; margin-bottom:10px; border-bottom: 1px solid #ddd; padding-bottom: 5px; color: #555;">Custos (R$)</h2>
         <p><strong>KM:</strong> ${data.km}</p>
-        <p><strong>Hora Parada R$:</strong> ${formatCurrency(data.hpReais)}</p>
+        <p><strong>Hora Parada:</strong> ${data.hpReais}</p>
         <p><strong>Ped R$:</strong> ${formatCurrency(data.pedReais)}</p>
         <p><strong>Est R$:</strong> ${formatCurrency(data.estReais)}</p>
       </div>
@@ -399,10 +399,10 @@ export function ContactForm() {
                 name="hpReais" 
                 render={({ field }) => ( 
                   <FormItem> 
-                    <FormLabel className="text-lg">Hora Parada R$</FormLabel> 
+                    <FormLabel className="text-lg">Hora Parada</FormLabel> 
                     <FormControl><Input 
-                        type="text" 
-                        placeholder="0,00" 
+                        type="number" 
+                        placeholder="Qntd de horas" 
                         {...field} 
                         className="text-base p-3 h-12" 
                     /></FormControl> 
