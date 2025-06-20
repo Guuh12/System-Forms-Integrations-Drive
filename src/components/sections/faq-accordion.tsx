@@ -17,13 +17,12 @@ const faqItems = [
   },
   {
     id: "item-2",
-    question: "Qual a forma correta de informar os custos (HP R$, Serv R$, etc)?",
+    question: "Qual a forma correta de informar os custos (Hora Parada, Ped R$, etc)?",
     answer: (
       <>
         Os campos de custo devem ser preenchidos com os valores gastos em cada categoria:
         <ul className="list-disc pl-5 mt-2 space-y-1">
-          <li><strong>HP R$:</strong> quanto tempo o motorista ficou parado.</li>
-          <li><strong>Serv R$:</strong> serviços extras como lavagem ou manutenção.</li>
+          <li><strong>Hora Parada:</strong> quanto tempo o motorista ficou parado.</li>
           <li><strong>Ped R$:</strong> pedágios.</li>
           <li><strong>Est R$:</strong> estacionamento.</li>
         </ul>

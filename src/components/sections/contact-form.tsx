@@ -32,7 +32,7 @@ const formSchema = z.object({
   chegada: z.string().min(1, "Horário de chegada é obrigatório."),
   
   km: z.string().min(1, "KM deve ser um número."),
-  hpReais: z.string().min(1, "HP R$ deve ser um número."),
+  hpReais: z.string().min(1, "Hora Parada deve ser um número."),
   pedReais: z.string().min(1, "Ped R$ deve ser um número."),
   estReais: z.string().min(1, "Est R$ deve ser um número."),
   assinatura: z.string().min(1,"Assinatura é obrigatória."), 
@@ -139,8 +139,8 @@ export function ContactForm() {
         <h2 style="font-size: 16px; margin-top: 0; margin-bottom:10px; border-bottom: 1px solid #ddd; padding-bottom: 5px; color: #555;">Custos (R$)</h2>
         <p><strong>KM:</strong> ${data.km}</p>
         <p><strong>Hora Parada:</strong> ${data.hpReais}</p>
-        <p><strong>Ped R$:</strong> ${formatCurrency(data.pedReais)}</p>
-        <p><strong>Est R$:</strong> ${formatCurrency(data.estReais)}</p>
+        <p><strong>Ped R$:</strong> ${data.pedReais}</p>
+        <p><strong>Est R$:</strong> ${data.estReais}</p>
       </div>
       
       <div style="margin-top: 20px; padding: 10px; border: 1px solid #eee; border-radius: 5px; background-color: #f9f9f9;">
@@ -417,7 +417,7 @@ export function ContactForm() {
                   <FormItem> 
                     <FormLabel className="text-lg">Ped R$</FormLabel> 
                     <FormControl><Input 
-                        type="text" 
+                        type="number" 
                         placeholder="0,00" 
                         {...field} 
                         className="text-base p-3 h-12" 
@@ -433,7 +433,7 @@ export function ContactForm() {
                   <FormItem> 
                     <FormLabel className="text-lg">Est R$</FormLabel> 
                     <FormControl><Input 
-                        type="text" 
+                        type="number" 
                         placeholder="0,00" 
                         {...field} 
                         className="text-base p-3 h-12" 
