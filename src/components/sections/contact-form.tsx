@@ -109,9 +109,8 @@ export function ContactForm() {
         return;
     }
 
-    const serialRes = await fetch('/api/serial-number', { method: 'POST' });
-    const serialData = await serialRes.json();
-    const serialNumber = serialData.serial;
+    // Gerar número de série aleatório de 9 dígitos
+    const serialNumber = String(Math.floor(Math.random() * 1e9)).padStart(9, '0');
 
     const pdfContentElement = document.createElement('div');
     pdfContentElement.style.width = '210mm'; 
@@ -130,7 +129,7 @@ export function ContactForm() {
     
     pdfContentElement.innerHTML = `
       <div style="position: absolute; left: 20px; top: 20px; font-size: 14px; color: #888;">
-        N*${serialNumber}
+        Nº ${serialNumber}
       </div>
       <h1 style="text-align: center; margin-bottom: 20px; font-size: 20px; color: #333;">Formulário de Transporte</h1>
       
