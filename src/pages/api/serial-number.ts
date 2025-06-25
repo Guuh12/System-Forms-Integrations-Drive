@@ -5,6 +5,15 @@ import path from 'path';
 const serialFilePath = path.resolve(process.cwd(), 'serial.txt');
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  if (req.method === 'OPTIONS') {
+    res.status(200).end();
+    return;
+  }
+
   if (req.method === 'POST') {
     let current = 0;
     if (fs.existsSync(serialFilePath)) {
@@ -24,4 +33,4 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
   } else {
     res.status(405).end();
   }
-} 
+}
