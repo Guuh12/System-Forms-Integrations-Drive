@@ -26,7 +26,7 @@ import html2canvas from "html2canvas";
 
 const formSchema = z.object({
   empresa: z.string().min(1, "Empresa é obrigatória."),
-  usuario: z.string().min(1, { message: "Usuário é obrigatório." }).max(50, { message: "Usuário não pode exceder 50 caracteres." }),
+  usuario: z.string().min(1, { message: "Nome do Motorista é obrigatório." }).max(50, { message: "Nome do Motorista não pode exceder 50 caracteres." }),
   trajeto: z.string().min(1, "Trajeto é obrigatório."),
   saida: z.string().min(1, "Horário de saída é obrigatório."),
   chegada: z.string().min(1, "Horário de chegada é obrigatório."),
@@ -109,12 +109,17 @@ export function ContactForm() {
         return;
     }
 
+    const serialRes = await fetch('/api/serial-number', { method: 'POST' });
+    const serialData = await serialRes.json();
+    const serialNumber = serialData.serial;
+
     const pdfContentElement = document.createElement('div');
     pdfContentElement.style.width = '210mm'; 
     pdfContentElement.style.padding = '20px';
     pdfContentElement.style.fontFamily = 'Arial, sans-serif';
     pdfContentElement.style.fontSize = '12px';
     pdfContentElement.style.boxSizing = 'border-box';
+    pdfContentElement.style.position = 'relative';
 
     const formatCurrency = (value?: string) => {
         if (value === "" || value === null || value === undefined) return "0,00";
@@ -124,12 +129,15 @@ export function ContactForm() {
     }
     
     pdfContentElement.innerHTML = `
+      <div style="position: absolute; left: 20px; top: 20px; font-size: 14px; color: #888;">
+        N*${serialNumber}
+      </div>
       <h1 style="text-align: center; margin-bottom: 20px; font-size: 20px; color: #333;">Formulário de Transporte</h1>
       
       <div style="margin-bottom: 15px; padding: 10px; border: 1px solid #eee; border-radius: 5px; background-color: #f9f9f9;">
         <h2 style="font-size: 16px; margin-top: 0; margin-bottom:10px; border-bottom: 1px solid #ddd; padding-bottom: 5px; color: #555;">Dados Gerais</h2>
         <p><strong>Empresa:</strong> ${data.empresa}</p>
-        <p><strong>Usuário:</strong> ${data.usuario}</p>
+        <p><strong>Nome do Motorista:</strong> ${data.usuario}</p>
         <p><strong>Trajeto:</strong> ${data.trajeto}</p>
         <p><strong>Saída:</strong> ${data.saida}</p>
         <p><strong>Chegada:</strong> ${data.chegada}</p>
@@ -211,7 +219,7 @@ export function ContactForm() {
         throw new Error(result.message || "Link do Google Drive não recebido ou falha no script.");
       }
 
-      const whatsappMessage = `Olá, segue o formulário do usuário ${data.usuario}. Link para o PDF: ${googleDriveLink}`;
+      const whatsappMessage = `Olá, segue o formulário do Motorista ${data.usuario}. Link para o PDF: ${googleDriveLink}`;
       const whatsappNumber = "5511952691735";
       const encodedMessage = encodeURIComponent(whatsappMessage);
 
@@ -321,9 +329,9 @@ export function ContactForm() {
                 name="usuario"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-lg">Usuário</FormLabel>
+                    <FormLabel className="text-lg">Motorista</FormLabel>
                     <FormControl>
-                      <Input placeholder="Nome do usuário" {...field} className="text-base p-3 h-12" />
+                      <Input placeholder="Nome do Motorista" {...field} className="text-base p-3 h-12" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
