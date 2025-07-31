@@ -37,6 +37,7 @@ const formSchema = z.object({
   estReais: z.string().min(1, "Est R$ deve ser um número."),
   assinatura: z.string().min(1,"Assinatura é obrigatória."), 
   dataAssinatura: z.date({ required_error: "Data da assinatura é obrigatória." }),
+  nome: z.string().optional(),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -75,6 +76,7 @@ export function ContactForm() {
       estReais: "",
       assinatura: "",
       dataAssinatura: new Date(),
+      nome: "",
     },
   });
 
@@ -155,6 +157,7 @@ export function ContactForm() {
         <p><strong>Data:</strong> ${format(data.dataAssinatura, "dd/MM/yyyy", { locale: ptBR })}</p>
         <p style="margin-top:10px;"><strong>Assinatura:</strong></p>
         ${currentSignature ? `<img src="${currentSignature}" alt="Assinatura" style="width: 180px; height: auto; border: 1px solid #ccc; margin-top: 5px; background-color: #fff;" />` : '<p>Não fornecida</p>'}
+        ${data.nome ? `<p style="margin-top:10px;"><strong>Nome:</strong> ${data.nome}</p>` : ''}
       </div>
       <div style="margin-top: 160px; text-align: center;">
         <img src='/icons/Logo Empres RS Transporte Sem Fundo-2.png' alt='Logo RS Transporte' style='display: block; margin: 0 auto 8px auto; max-width: 60px; height: auto;' />
@@ -257,6 +260,7 @@ export function ContactForm() {
         estReais: "",
         assinatura: "",
         dataAssinatura: new Date(),
+        nome: "",
       });
 
     } catch (error: any) {
@@ -479,6 +483,20 @@ export function ContactForm() {
                         <Trash2 className="mr-2 h-4 w-4" /> Limpar Assinatura
                    </Button>
                   {fieldState.error && <FormMessage>{fieldState.error.message}</FormMessage>}
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="nome"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-lg">Nome</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Escreva seu nome" {...field} className="text-base p-3 h-12" />
+                  </FormControl>
+                  <FormMessage />
                 </FormItem>
               )}
             />
