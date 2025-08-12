@@ -470,7 +470,7 @@ export function ContactForm() {
                             penColor="black"
                             canvasProps={{
                               width: canvasWidth > 350 ? 350 : canvasWidth,
-                              height: 210,
+                              height: 180,
                               className: 'sigCanvas w-full h-auto rounded-md bg-white',
                             }}
                             onEnd={handleSignatureEnd}
