@@ -27,9 +27,10 @@ import html2canvas from "html2canvas";
 const formSchema = z.object({
   empresa: z.string().min(1, "Empresa é obrigatória."),
   usuario: z.string().min(1, { message: "Nome do Motorista é obrigatório." }).max(50, { message: "Nome do Motorista não pode exceder 50 caracteres." }),
-  trajeto: z.string().min(1, "Trajeto é obrigatório."),
-  saida: z.string().min(1, "Horário de saída é obrigatório."),
-  chegada: z.string().min(1, "Horário de chegada é obrigatório."),
+  // Campos removidos temporariamente - podem ser restaurados se necessário:
+  // trajeto: z.string().min(1, "Trajeto é obrigatório."),
+  // saida: z.string().min(1, "Horário de saída é obrigatório."),
+  // chegada: z.string().min(1, "Horário de chegada é obrigatório."),
   
   km: z.string().min(1, "KM deve ser um número."),
   hpReais: z.string().min(1, "Hora Parada deve ser um número."),
@@ -67,9 +68,10 @@ export function ContactForm() {
     defaultValues: {
       empresa: "",
       usuario: "",
-      trajeto: "",
-      saida: "",
-      chegada: "",
+      // Campos removidos temporariamente - podem ser restaurados se necessário:
+      // trajeto: "",
+      // saida: "",
+      // chegada: "",
       km: "",
       hpReais: "",
       pedReais: "",
@@ -139,9 +141,11 @@ export function ContactForm() {
         <h2 style="font-size: 16px; margin-top: 0; margin-bottom:10px; border-bottom: 1px solid #ddd; padding-bottom: 5px; color: #555;">Dados Gerais</h2>
         <p><strong>Empresa:</strong> ${data.empresa}</p>
         <p><strong>Nome do Motorista:</strong> ${data.usuario}</p>
-        <p><strong>Trajeto:</strong> ${data.trajeto}</p>
-        <p><strong>Saída:</strong> ${data.saida}</p>
-        <p><strong>Chegada:</strong> ${data.chegada}</p>
+        <!-- Campos removidos temporariamente - podem ser restaurados se necessário:
+        <p><strong>Trajeto:</strong> [campo removido]</p>
+        <p><strong>Saída:</strong> [campo removido]</p>
+        <p><strong>Chegada:</strong> [campo removido]</p>
+        -->
       </div>
       
       <div style="margin-bottom: 15px; padding: 10px; border: 1px solid #eee; border-radius: 5px; background-color: #f9f9f9;">
@@ -251,9 +255,10 @@ export function ContactForm() {
       form.reset({
         empresa: "",
         usuario: "",
-        trajeto: "",
-        saida: "",
-        chegada: "",
+        // Campos removidos temporariamente - podem ser restaurados se necessário:
+        // trajeto: "",
+        // saida: "",
+        // chegada: "",
         km: "",
         hpReais: "",
         pedReais: "",
@@ -342,6 +347,7 @@ export function ContactForm() {
               />
             </div>
 
+            {/* Campos removidos temporariamente - podem ser restaurados se necessário:
             <FormField
               control={form.control}
               name="trajeto"
@@ -384,6 +390,7 @@ export function ContactForm() {
                 )}
               />
             </div>
+            */}
             
             <h3 className="text-xl font-semibold pt-4 border-t mt-6">Custos (R$)</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
